@@ -2,14 +2,17 @@
     //to display errors
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
+    session_start();
 
+    $id = $_SESSION['id'];
+    
     include('../database/connection.php');
 
-    $sql = "SELECT * FROM accounts WHERE user_type = 'student'";
+    $sql = "SELECT * FROM accounts WHERE id = $id";
     $result = $connection->query($sql);
 
     if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
+        $student = $result->fetch_assoc();
     } else {
         die('User not found.');
     }
@@ -38,12 +41,12 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">core</div>
-                            <a class="nav-link" href="index.html">
+                            <a class="nav-link" href="student-dashboard.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 My Bills
                             </a>
                             <div class="sb-sidenav-menu-heading">Interface</div>
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="profile.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 My Profile
                             </a>
@@ -55,7 +58,7 @@
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                            <?php echo $user['first_name'] . ' ' . $user['last_name']; ?>
+                            <?php echo $student['first_name'] . ' ' . $student['last_name']; ?>
                     </div>
                 </nav>
             </div>

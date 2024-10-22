@@ -34,7 +34,7 @@
 
                     if (isset($_GET['delete_id'])) {
                         $delete_id = $_GET['delete_id'];
-                        $stmt = $connection->prepare("DELETE FROM student_bills WHERE id = ?");
+                        $stmt = $connection->prepare("DELETE FROM accounts WHERE id = ?");
                         $stmt->bind_param("i", $delete_id);
                         $result = $stmt->execute();
 
@@ -47,7 +47,7 @@
                     }
 
                     // Fetch student records to display
-                    $sql = "SELECT * FROM student_bills WHERE year_level = '3rd' ORDER BY id DESC";
+                    $sql = "SELECT * FROM accounts WHERE year_level = '3rd' ORDER BY id DESC";
                     $result = $connection->query($sql);
 
                     if ($result->num_rows > 0) {
@@ -55,10 +55,10 @@
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>
                                 <td>{$count}</td>
-                                <td>{$row['student_id']}</td>
+                                <td>{$row['school_id']}</td>
                                 <td>{$row['first_name']}</td>
                                 <td>{$row['last_name']}</td>
-                                <td>$ {$row['remaining_balance']}</td>
+                                <td>$ {$row['bill_balance']}</td>
                                 <td>
                                     <button class='btn btn-warning'>Edit</button>
                                     <button class='btn btn-danger' onclick='confirmDelete(" . $row['id'] . ")'>Delete</button>

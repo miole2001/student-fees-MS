@@ -10,11 +10,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
     $confirm_password = $_POST["confirm-password"];
     $user_type = $_POST["type"];
+    $bill = $_POST["bill"];
 
     if ($password === $confirm_password) {
 
-        $register = "INSERT INTO `accounts`(`first_name`, `last_name`, `email`, `password`, `school_id`, `year-level`, `user_type`)
-                              VALUES ('$first_name', '$last_name', '$email', '$password', '$school_id', '$year_level', '$user_type')";
+        $register = "INSERT INTO `accounts`(`first_name`, `last_name`, `email`, `password`, `school_id`, `year_level`, `bill_balance`, `user_type`)
+                              VALUES ('$first_name', '$last_name', '$email', '$password', '$school_id', '$year_level', '$bill', '$user_type')";
 
         $result = mysqli_query($connection, $register);
 
@@ -97,6 +98,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 </div>
 
                                                 <input type="hidden" id="type" name="type" value="student">
+                                                <input type="hidden" id="bill" name="bill" value="0">
+
 
 
                                             </div>

@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'];
 
         // Update query
-        $sql = "UPDATE accounts SET school_id = ?, `year-level` = ?, first_name = ?, last_name = ?, email = ?, password = ? WHERE id = ?";
+        $sql = "UPDATE accounts SET school_id = ?, `year_level` = ?, first_name = ?, last_name = ?, email = ?, password = ? WHERE id = ?";
         $stmt = $connection->prepare($sql);
         $stmt->bind_param("ssssssi", $schoolId, $yearLevel, $firstName, $lastName, $email, $password, $id);
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'];
 
         // Insert query
-        $sql = "INSERT INTO `accounts`(`first_name`, `last_name`, `email`, `password`, `school_id`, `year-level`, `user_type`, `date_registered`) VALUES (?, ?, ?, ?, ?, ?, 'student', NOW())";
+        $sql = "INSERT INTO `accounts`(`first_name`, `last_name`, `email`, `password`, `school_id`, `year_level`, `bill_balance`, `user_type`, `date_registered`) VALUES (?, ?, ?, ?, ?, ?, '0', 'student', NOW())";
         $stmt = $connection->prepare($sql);
         $stmt->bind_param("ssssss", $firstName, $lastName, $email, $password, $schoolId, $yearLevel);
 
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             echo "<tr>
                                         <td>{$count}</td>
                                         <td>{$row['school_id']}</td>
-                                        <td>{$row['year-level']}</td>
+                                        <td>{$row['year_level']}</td>
                                         <td>{$row['first_name']}</td>
                                         <td>{$row['last_name']}</td>
                                         <td>{$row['email']}</td>
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <button class='btn btn-warning' data-bs-toggle='modal' data-bs-target='#editModal' 
                                             data-id='{$row['id']}' 
                                             data-schoolid='{$row['school_id']}' 
-                                            data-yearlevel='{$row['year-level']}' 
+                                            data-yearlevel='{$row['year_level']}' 
                                             data-firstname='{$row['first_name']}' 
                                             data-lastname='{$row['last_name']}' 
                                             data-email='{$row['email']}' 
