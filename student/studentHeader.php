@@ -14,7 +14,7 @@
     if ($result->num_rows > 0) {
         $student = $result->fetch_assoc();
     } else {
-        die('User not found.');
+        die('Account not found.');
     }
 ?>
 <!DOCTYPE html>
@@ -42,16 +42,16 @@
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">core</div>
                             <a class="nav-link" href="student-dashboard.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
                                 My Bills
                             </a>
                             <div class="sb-sidenav-menu-heading">Interface</div>
                             <a class="nav-link" href="profile.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-circle"></i></div>
                                 My Profile
                             </a>
                             <a class="nav-link" href="../logout.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
                                 Logout
                             </a>
                         </div>

@@ -11,11 +11,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirm_password = $_POST["confirm-password"];
     $user_type = $_POST["type"];
     $bill = $_POST["bill"];
+    $profile = $_POST["profile-image"];
+
 
     if ($password === $confirm_password) {
 
-        $register = "INSERT INTO `accounts`(`first_name`, `last_name`, `email`, `password`, `school_id`, `year_level`, `bill_balance`, `user_type`)
-                              VALUES ('$first_name', '$last_name', '$email', '$password', '$school_id', '$year_level', '$bill', '$user_type')";
+        $register = "INSERT INTO `accounts`(`profile_pic`, `first_name`, `last_name`, `email`, `password`, `school_id`, `year_level`, `bill_balance`, `user_type`)
+                              VALUES ('$profile', '$first_name', '$last_name', '$email', '$password', '$school_id', '$year_level', '$bill', '$user_type')";
 
         $result = mysqli_query($connection, $register);
 
@@ -49,6 +51,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
                                     <div class="card-body">
                                         <form action="" method="post">
+
+                                            <div class="row mb-3">
+                                                <div class="col-md-12">
+                                                    <label for="profile-image">Profile Image</label>
+                                                    <input type="file" class="form-control" id="profile-image" name="profile-image" accept="image/*">
+                                                </div>
+                                            </div>
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
