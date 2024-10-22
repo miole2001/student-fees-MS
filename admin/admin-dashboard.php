@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
+                        <a class="small text-white stretched-link" href="student-list.php">View Details</a>
                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
                 </div>
@@ -33,37 +33,9 @@
             <div class="col-xl-3 col-md-5">
                 <div class="card bg-primary mb-4">
                     <div class="card-body text-center text-white">
-                        <h2>Total Paid Fees</h2>
-                        <h3>12</h3>
-                    </div>
-
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-5">
-                <div class="card bg-primary mb-4">
-                    <div class="card-body text-center text-white">
-                        <h2>Total Fees</h2>
-                        <h3>12</h3>
-                    </div>
-
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-5">
-                <div class="card bg-primary mb-4">
-                    <div class="card-body text-center text-white">
-                        <h2>All Grade Levels</h2>
+                        <h2>Total Payment</h2>
                         <?php
-                            $query = "SELECT * FROM accounts WHERE user_type = 'student'";
+                            $query = "SELECT * FROM payment";
                             $run_query = mysqli_query($connection, $query);
 
                             if ($run_query) {
@@ -76,18 +48,31 @@
                     </div>
 
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
+                        <a class="small text-white stretched-link" href="all-payments.php">View Details</a>
                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
                 </div>
             </div>
 
+            <!-- <div class="col-xl-3 col-md-5">
+                <div class="card bg-primary mb-4">
+                    <div class="card-body text-center text-white">
+                        <h2>Total Fees</h2>
+                        <h3>12</h3>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="#">View Details</a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div> -->
+
         </div>
 
-        <div class="card mb-4">
+        <div class="card mt-5">
             <div class="card-header">
-                <i class="fas fa-table me-1"></i>
-                All Student Fees
+                PAYMENT LOGS
             </div>
             <div class="card-body">
                 <table id="datatablesSimple">
@@ -97,11 +82,10 @@
                             <th>Student ID</th>
                             <th>First Name</th>
                             <th>Last Name</th>
-                            <th>Year Level</th>
-                            <th>Bill</th>
-                            <th>Bill</th>
-                            <th>Bill</th>
-                            <th>Actions</th>
+                            <th>Bill Balance</th>
+                            <th>Payment Amount</th>
+                            <th>Remaining Balance</th>
+                            <th>Payment Date</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -110,25 +94,41 @@
                             <th>Student ID</th>
                             <th>First Name</th>
                             <th>Last Name</th>
-                            <th>Year Level</th>
-                            <th>Bill</th>
-                            <th>Bill</th>
-                            <th>Bill</th>
-                            <th>Actions</th>
+                            <th>Bill Balance</th>
+                            <th>Payment Amount</th>
+                            <th>Remaining Balance</th>
+                            <th>Payment Date</th>
                         </tr>
                     </tfoot>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>23-20001</td>
-                            <td>Garrett</td>
-                            <td>Winters</td>
-                            <td>2nd Year</td>
-                            <td>$800</td>
-                            <td>$320</td>
-                            <td>$480</td>
-                            <td>Update/Delete</td>
-                        </tr>
+                        <?php
+
+                        // Fetch student records to display
+                        $sql = "SELECT * FROM payment ORDER BY id DESC";
+                        $result = $connection->query($sql);
+
+                        if ($result->num_rows > 0) {
+                            $count = 1;
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>
+                                            <td>{$count}</td>
+                                            <td>{$row['student_id']}</td>
+                                            <td>{$row['first_name']}</td>
+                                            <td>{$row['last_name']}</td>
+                                            <td>₱ {$row['bill_balance']}</td>
+                                            <td>₱ {$row['payment_amount']}</td>
+                                            <td>₱ {$row['remaining_balance']}</td>
+                                            <td>{$row['payment_date']}</td>
+
+                                        </tr>";
+                                $count++;
+                            }
+                        } else {
+                            echo "<tr><td colspan='8' class='text-center'>No students found.</td></tr>";
+                        }
+
+                        $connection->close();
+                        ?>
                     </tbody>
                 </table>
             </div>

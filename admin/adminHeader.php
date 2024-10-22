@@ -39,15 +39,15 @@
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Core</div>
                             <a class="nav-link" href="admin-dashboard.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
                                 Dashboard
                             </a>
                             <a class="nav-link" href="student-list.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                 Student Accounts
                             </a>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-money-bill-alt"></i></div>
                                 Fees Per Year level
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
@@ -59,8 +59,14 @@
                                     <a class="nav-link" href="fourth-yr.php">Fourth Year</a>
                                 </nav>
                             </div>
+
+                            <a class="nav-link" href="all-payments.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                                Payment Logs
+                            </a>
+
                             <a class="nav-link" href="../logout.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
                                 Logout
                             </a>
                         </div>

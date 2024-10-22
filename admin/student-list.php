@@ -5,6 +5,7 @@ include("../database/connection.php");
 // Handle Update Request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['id'])) {
+        // Update Request
         $id = $_POST['id'];
         $schoolId = $_POST['school_id'];
         $yearLevel = $_POST['year_level'];
@@ -14,9 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'];
 
         // Update query
-        $sql = "UPDATE accounts SET school_id = ?, `year_level` = ?, first_name = ?, last_name = ?, email = ?, password = ? WHERE id = ?";
+        $sql = "UPDATE `accounts` SET `first_name`=?, `last_name`=?, `email`=?, `password`=?, `school_id`=?, `year_level`=? WHERE id=?";
         $stmt = $connection->prepare($sql);
-        $stmt->bind_param("ssssssi", $schoolId, $yearLevel, $firstName, $lastName, $email, $password, $id);
+        $stmt->bind_param("ssssssi", $firstName, $lastName, $email, $password, $schoolId, $yearLevel, $id);
 
         if ($stmt->execute()) {
             header("Location: student-list.php");
@@ -32,12 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $lastName = $_POST['last_name'];
         $email = $_POST['email'];
         $password = $_POST['password'];
+        $profile = $_POST['profile-image'];
 
         // Insert query
-        $sql = "INSERT INTO `accounts`(`first_name`, `last_name`, `email`, `password`, `school_id`, `year_level`, `bill_balance`, `user_type`, `date_registered`) VALUES (?, ?, ?, ?, ?, ?, '0', 'student', NOW())";
+        $sql = "INSERT INTO `accounts`(`profile_pic`, `first_name`, `last_name`, `email`, `password`, `school_id`, `year_level`, `bill_balance`, `user_type`, `date_registered`) VALUES (?, ?, ?, ?, ?, ?, '0', 'student', NOW())";
         $stmt = $connection->prepare($sql);
-        $stmt->bind_param("ssssss", $firstName, $lastName, $email, $password, $schoolId, $yearLevel);
-
+        $stmt->bind_param("sssssss", $profile, $firstName, $lastName, $email, $password, $schoolId, $yearLevel);
         if ($stmt->execute()) {
             header("Location: student-list.php");
             exit();
@@ -63,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Profile</th>
                         <th>Student ID</th>
                         <th>Year Level</th>
                         <th>First Name</th>
@@ -76,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Profile</th>
                         <th>Student ID</th>
                         <th>Year Level</th>
                         <th>First Name</th>
@@ -111,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>
                                         <td>{$count}</td>
+                                        <td><img src='../image/" . $row['profile_pic'] . "' alt='User Image' class='user-image' style='width: 100px; height: auto;'></td>
                                         <td>{$row['school_id']}</td>
                                         <td>{$row['year_level']}</td>
                                         <td>{$row['first_name']}</td>
@@ -119,14 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <td>{$row['password']}</td>
                                         <td>{$row['date_registered']}</td>
                                         <td>
-                                            <button class='btn btn-warning' data-bs-toggle='modal' data-bs-target='#editModal' 
-                                            data-id='{$row['id']}' 
-                                            data-schoolid='{$row['school_id']}' 
-                                            data-yearlevel='{$row['year_level']}' 
-                                            data-firstname='{$row['first_name']}' 
-                                            data-lastname='{$row['last_name']}' 
-                                            data-email='{$row['email']}' 
-                                            data-password='{$row['password']}'>Edit</button>
+                                            <button class='btn btn-warning' onclick='openEditModal({$row['id']}, \"{$row['school_id']}\", \"{$row['year_level']}\", \"{$row['first_name']}\", \"{$row['last_name']}\", \"{$row['email']}\", \"{$row['password']}\")'>Edit</button>
                                             <button class='btn btn-danger' onclick='confirmDelete(" . $row['id'] . ")'>Delete</button>
                                         </td> 
                                     </tr>";
@@ -139,65 +136,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $connection->close();
                     ?>
                 </tbody>
-                <script>
-                    function confirmDelete(id) {
-                        if (confirm('Are you sure you want to delete this entry?')) {
-                            window.location.href = 'student-list.php?delete_id=' + id;
-                        }
-                    }
-                </script>
             </table>
         </div>
     </div>
 </main>
-
-<!-- Edit Student Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Student Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editForm" action="student-list.php" method="POST">
-                    <input type="hidden" id="studentId" name="id">
-                    <div class="mb-3">
-                        <label for="schoolId" class="form-label">Student ID</label>
-                        <input type="text" class="form-control" id="schoolId" name="school_id" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="yearLevel" class="form-label">Year Level</label>
-                        <select class="form-select" id="yearLevel" name="year_level" required>
-                            <option value="">Select Year Level</option>
-                            <option value="1st">1st Year</option>
-                            <option value="2nd">2nd Year</option>
-                            <option value="3rd">3rd Year</option>
-                            <option value="4th">4th Year</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="firstName" name="first_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" name="last_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Add Student Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
@@ -209,6 +151,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="modal-body">
                 <form id="addForm" action="student-list.php" method="POST">
+                    <div class="mb-3">
+                        <label for="addFirstName" class="form-label">Profile Picture</label>
+                        <input type="file" class="form-control" id="profile-image" name="profile-image" accept="image/*">
+                    </div>
                     <div class="mb-3">
                         <label for="addSchoolId" class="form-label">Student ID</label>
                         <input type="text" class="form-control" id="addSchoolId" name="school_id" required>
@@ -246,33 +192,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
-<?php include("../includes/footer.php"); ?>
-<?php include("../includes/scripts.php"); ?>
+<!-- Edit Student Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" action="student-list.php" method="POST">
+                    <input type="hidden" name="id" id="studentId">
+                    <div class="mb-3">
+                        <label for="editSchoolId" class="form-label">Student ID</label>
+                        <input type="text" class="form-control" id="editSchoolId" name="school_id" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editYearLevel" class="form-label">Year Level</label>
+                        <select class="form-select" id="editYearLevel" name="year_level" required>
+                            <option value="">Select Year Level</option>
+                            <option value="1st">1st Year</option>
+                            <option value="2nd">2nd Year</option>
+                            <option value="3rd">3rd Year</option>
+                            <option value="4th">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editFirstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="editFirstName" name="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editLastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="editLastName" name="last_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editEmail" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="editPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Student</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(id) {
+        if (confirm('Are you sure you want to delete this entry?')) {
+            window.location.href = 'student-list.php?delete_id=' + id;
+        }
+    }
+
+    function openEditModal(id, schoolId, yearLevel, firstName, lastName, email, password) {
+        document.getElementById('studentId').value = id;
+        document.getElementById('editSchoolId').value = schoolId;
+        document.getElementById('editYearLevel').value = yearLevel;
+        document.getElementById('editFirstName').value = firstName;
+        document.getElementById('editLastName').value = lastName;
+        document.getElementById('editEmail').value = email;
+        document.getElementById('editPassword').value = password;
+
+        var myModal = new bootstrap.Modal(document.getElementById('editModal'));
+        myModal.show();
+    }
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
-<script>
-    // Populate the Edit Modal
-$('#editModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget); // Button that triggered the modal
-    var id = button.data('id'); // Extract info from data-* attributes
-    var schoolId = button.data('schoolid');
-    var yearLevel = button.data('yearlevel');
-    var firstName = button.data('firstname');
-    var lastName = button.data('lastname');
-    var email = button.data('email');
-    var password = button.data('password');
-
-    // Update the modal's content
-    var modal = $(this);
-    modal.find('#studentId').val(id);
-    modal.find('#schoolId').val(schoolId);
-    modal.find('#yearLevel').val(yearLevel);
-    modal.find('#firstName').val(firstName);
-    modal.find('#lastName').val(lastName);
-    modal.find('#email').val(email);
-    modal.find('#password').val(password);
-});
-
-</script>
+<?php include("../includes/footer.php"); ?>
+<?php include("../includes/scripts.php"); ?>

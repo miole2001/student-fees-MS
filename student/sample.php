@@ -6,43 +6,30 @@
             <h3 class="text-center">Payment Form</h3>
         </div>
         <div class="card-body">
-        <?php
+            <?php
+
             // Handle form submission
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Get the payment amount from the form
-                $payment = (float) $_POST['payment'];  // Cast to float to ensure it's a number
-
-                $studentID = $student['school_id'];
-                $fname = mysqli_real_escape_string($connection, $student['first_name']);  // Escape strings to prevent SQL injection
-                $lname = mysqli_real_escape_string($connection, $student['last_name']);
-                $bill = (float) $student['bill_balance'];
-
+                $payment = $_POST['payment'];
+                
                 // Update the student's bill balance by deducting the payment
-                $updatedBill = $bill - $payment;
+                $updatedBill = $student['bill_balance'] - $payment;
+
+                // Make sure the updated bill doesn't go negative
                 if ($updatedBill < 0) {
                     $updatedBill = 0;
                 }
 
-                // Build the SQL query, including quotes around strings
-                $paymentSql = "INSERT INTO `payment`(`student_id`, `first_name`, `last_name`, `bill_balance`, `payment_amount`, `remaining_balance`, `payment_date`) 
-                        VALUES ('$studentID', '$fname', '$lname', $bill, $payment, $updatedBill, NOW())";
-                
-                // Execute the query and check for errors
-                if (mysqli_query($connection, $paymentSql)) {
-                    echo '<div class="alert alert-success text-center">Payment has been recorded successfully.</div>';
-                } else {
-                    echo '<div class="alert alert-danger text-center">Error: ' . mysqli_error($connection) . '</div>';
-                }
+                // Display a success message
+                echo '<div class="alert alert-success text-center">Payment of ₱' . number_format($payment, 2) . ' has been applied. Remaining balance is ₱' . number_format($updatedBill, 2) . '.</div>';
 
-                // Update the student's bill in the database
-                $updateQuery = "UPDATE accounts SET bill_balance = $updatedBill WHERE id = '$id'";
-                if (mysqli_query($connection, $updateQuery)) {
-                    echo '<div class="alert alert-success text-center">Bill balance updated successfully.</div>';
-                } else {
-                    echo '<div class="alert alert-danger text-center">Error updating bill balance: ' . mysqli_error($connection) . '</div>';
-                }
+                // Here you would typically update the student's bill in the database
+                // For example:
+                $query = "UPDATE students SET bill_balance = $updatedBill WHERE id = $id";
+                mysqli_query($connection, $query);
 
-                // Update the bill in the form
+                // Update the student's bill balance in the form to reflect the deduction
                 $student['bill_balance'] = $updatedBill;
             }
             ?>
