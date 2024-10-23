@@ -25,6 +25,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo "Error updating record: " . $stmt->error;
         }
+    } elseif (isset($_POST['new_student'])) {
+        // Insert Request
+        $schoolId = $_POST['school_id'];
+        $yearLevel = $_POST['year_level'];
+        $firstName = $_POST['first_name'];
+        $lastName = $_POST['last_name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $profile = $_POST['profile'];
+
+        // Insert query
+        $sql = "INSERT INTO `accounts` (`profile_pic`, `first_name`, `last_name`, `email`, `password`, `school_id`, `year_level`, `bill_balance`, `user_type`, `date_registered`) VALUES (?, ?, ?, ?, ?, ?, ?, '0', 'student', NOW())";
+        $stmt = $connection->prepare($sql);
+        $stmt->bind_param("sssssss", $profile, $firstName, $lastName, $email, $password, $schoolId, $password);
+
+        if ($stmt->execute()) {
+            header("Location: student-list.php");
+            exit();
+        } else {
+            echo "Error inserting record: " . $stmt->error;
+        }
     }
 }
 ?>
@@ -32,9 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="d-flex justify-content-center mt-4">
         <h3>List of All Students</h3>
     </div>
+    
     <div class="card mt-4">
-        <div class="card-header">
-            Student Lists
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Student Lists</span>
+            <button class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#insertModal">Add Student</button>
         </div>
         <div class="card-body">
             <table id="datatablesSimple">
@@ -117,6 +140,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </main>
+
+<!-- Insert Student Modal -->
+<div class="modal fade" id="insertModal" tabindex="-1" aria-labelledby="insertModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="insertModalLabel">Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="insertForm" action="student-list.php" method="POST">
+                    <input type="hidden" name="new_student" value="1">
+
+                    <div class="mb-3">
+                        <label for="insertFirstName" class="form-label">Profile picture</label>
+                        <input type="file" class="form-control" id="profile" name="profile" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="insertSchoolId" class="form-label">Student ID</label>
+                        <input type="text" class="form-control" id="insertSchoolId" name="school_id" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="insertYearLevel" class="form-label">Year Level</label>
+                        <select class="form-select" id="insertYearLevel" name="year_level" required>
+                            <option value="">Select Year Level</option>
+                            <option value="1st">1st Year</option>
+                            <option value="2nd">2nd Year</option>
+                            <option value="3rd">3rd Year</option>
+                            <option value="4th">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="insertFirstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="insertFirstName" name="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="insertLastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="insertLastName" name="last_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="insertEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="insertEmail" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="insertPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="insertPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Student</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Edit Student Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
