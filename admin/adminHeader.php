@@ -60,6 +60,11 @@
                                 </nav>
                             </div>
 
+                            <a class="nav-link" href="add-student.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                                Add Student
+                            </a>
+
                             <a class="nav-link" href="all-payments.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
                                 Payment Logs
